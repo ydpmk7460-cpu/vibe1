@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한도토리의 냥냥한 첫인사</title>
+  <style>
+    /* 페이지 전체에서 함께 사용하는 색상 */
+    :root {
+      --background: #fff8e9;
+      --paper: rgba(255, 255, 255, 0.9);
+      --ink: #344b55;
+      --sub-ink: #657a82;
+      --mint: #a8d8c7;
+      --deep-mint: #4f8c7d;
+      --sky: #c9e5f2;
+      --silver: #e7ebed;
+      --pink: #f4cfd1;
+      --line: rgba(52, 75, 85, 0.12);
+      --shadow: 0 22px 60px rgba(71, 99, 106, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 42px 20px;
+      color: var(--ink);
+      background-color: var(--background);
+      background-image: radial-gradient(rgba(79, 140, 125, 0.11) 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      line-height: 1.7;
+      transition: background-color 0.55s ease;
+    }
+
+    /* 버튼을 누르면 자바스크립트가 아래 배경색 이름을 바꿉니다. */
+    body[data-background="하늘"] {
+      --background: #e9f6fc;
+    }
+
+    body[data-background="민트"] {
+      --background: #e9f7f0;
+    }
+
+    .page {
+      width: min(100%, 920px);
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 34px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 230px;
+      align-items: center;
+      gap: 40px;
+      padding: 64px 68px 52px;
+      background: linear-gradient(135deg, rgba(201, 229, 242, 0.45), rgba(255, 248, 233, 0.45));
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: var(--deep-mint);
+      font-size: 0.84rem;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.1rem, 5vw, 3.45rem);
+      line-height: 1.22;
+      letter-spacing: -0.065em;
+      word-break: keep-all;
+    }
+
+    .one-line {
+      margin: 21px 0 0;
+      color: var(--sub-ink);
+      font-size: 1.05rem;
+      word-break: keep-all;
+    }
+
+    .one-line strong {
+      color: var(--deep-mint);
+    }
+
+    /* 사용자가 제공한 실제 고양이 사진 */
+    .cat-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .cat-photo {
+      display: block;
+      width: 210px;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border: 7px solid #ffffff;
+      border-radius: 50% 50% 45% 45%;
+      background: var(--silver);
+      box-shadow: 0 16px 26px rgba(85, 104, 112, 0.18);
+    }
+
+    .paw-label {
+      position: absolute;
+      right: -5px;
+      bottom: -7px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: #ffffff;
+      background: var(--deep-mint);
+      font-size: 0.78rem;
+      font-weight: 700;
+      transform: rotate(-4deg);
+    }
+
+    .contents {
+      padding: 48px 68px 60px;
+    }
+
+    .greeting {
+      margin: 0 0 34px;
+      padding: 25px 30px;
+      border: 1px solid rgba(79, 140, 125, 0.18);
+      border-radius: 23px;
+      color: #47656b;
+      background: #f2faf6;
+      font-size: clamp(1.02rem, 2.5vw, 1.18rem);
+      font-weight: 700;
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .card {
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .card-wide {
+      grid-column: 1 / -1;
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      color: var(--deep-mint);
+      font-size: 1.06rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--sub-ink);
+      word-break: keep-all;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tags li {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #eef7fa;
+      font-size: 0.93rem;
+      font-weight: 700;
+    }
+
+    .card:nth-child(even) .tags li {
+      background: #eff8f3;
+    }
+
+    .color-area {
+      margin-top: 34px;
+      padding-top: 30px;
+      border-top: 1px dashed rgba(52, 75, 85, 0.22);
+      text-align: center;
+    }
+
+    .color-area p {
+      margin: 0 0 14px;
+      color: var(--sub-ink);
+      font-size: 0.92rem;
+    }
+
+    button {
+      min-height: 48px;
+      padding: 12px 24px;
+      border: 0;
+      border-radius: 999px;
+      color: #ffffff;
+      background: var(--deep-mint);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(79, 140, 125, 0.25);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    button:hover {
+      background: #3f766a;
+      transform: translateY(-2px);
+    }
+
+    button:focus-visible {
+      outline: 3px solid rgba(79, 140, 125, 0.3);
+      outline-offset: 4px;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 18px 12px;
+      }
+
+      .page {
+        border-radius: 25px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 48px 25px 38px;
+        text-align: center;
+      }
+
+      .cat-wrap {
+        min-height: 190px;
+      }
+
+      .contents {
+        padding: 36px 24px 44px;
+      }
+
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-wide {
+        grid-column: auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      body,
+      button {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body data-background="크림">
+  <main class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">가상 인물 자기소개 · MEOW!</p>
+        <h1>한도토리의<br>냥냥한 첫인사</h1>
+        <p class="one-line">
+          사진과 카페, 고양이를 좋아하는<br>
+          미디어콘텐츠학과 2학년 <strong>한도토리</strong>입니다.
+        </p>
+      </div>
+
+      <div class="cat-wrap">
+        <img
+          class="cat-photo"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzU7a2AZOFcm79rc0Zy_4V_Wgng7jauu_Y4st0yXdhHA&amp;s=10"
+          alt="한도토리가 좋아하는 귀여운 고양이 사진"
+        >
+        <span class="paw-label">페르시안 친칠라 ♥</span>
+      </div>
+    </header>
+
+    <section class="contents" aria-label="한도토리의 자세한 소개">
+      <p class="greeting">
+        “아직 어색하지만 편하게 말 걸어 주세요!<br>
+        맛집이나 좋은 카페를 함께 찾아다니고 싶어요.”
+      </p>
+
+      <div class="profile-grid">
+        <article class="card">
+          <h2>🐾 저는 이런 사람이에요</h2>
+          <p>22세 대학생으로, 처음에는 조금 조용하지만 친해지면 이야기를 많이 하는 편이에요.</p>
+        </article>
+
+        <article class="card">
+          <h2>🎓 전공</h2>
+          <p>미디어콘텐츠학과 2학년</p>
+        </article>
+
+        <article class="card">
+          <h2>☕ 취미</h2>
+          <ul class="tags">
+            <li>📷 사진 찍기</li>
+            <li>🏀 농구 경기 보기</li>
+            <li>☕ 카페 탐방</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>💚 좋아하는 것</h2>
+          <ul class="tags">
+            <li>🐱 고양이</li>
+            <li>🌶️ 떡볶이</li>
+            <li>🎧 인디 음악</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>✨ 잘하는 것</h2>
+          <ul class="tags">
+            <li>사진 보정</li>
+            <li>발표 자료 꾸미기</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>🌱 대학 생활 목표</h2>
+          <p>새로운 친구들과 다양한 활동을 경험하기</p>
+        </article>
+
+        <article class="card card-wide">
+          <h2>😻 가장 좋아하는 고양이</h2>
+          <p>은빛 털과 초록빛 눈이 매력적인 페르시안 친칠라를 가장 좋아해요.</p>
+        </article>
+      </div>
+
+      <div class="color-area">
+        <p id="color-status" aria-live="polite">현재 배경색은 크림색입니다.</p>
+        <button id="color-button" type="button">🐾 배경색 바꾸기</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 크림 → 하늘 → 민트 순서로 배경색을 바꿉니다.
+    const backgroundNames = ["크림", "하늘", "민트"];
+    const colorButton = document.querySelector("#color-button");
+    const colorStatus = document.querySelector("#color-status");
+    let currentBackground = 0;
+
+    colorButton.addEventListener("click", function () {
+      currentBackground = (currentBackground + 1) % backgroundNames.length;
+      const nextBackground = backgroundNames[currentBackground];
+
+      document.body.dataset.background = nextBackground;
+      colorStatus.textContent = `현재 배경색은 ${nextBackground}색입니다.`;
+    });
+  </script>
+</body>
+</html>
